@@ -8,6 +8,14 @@ class ReaderWithBook
     @current_page = current_page
   end
 
+  def self.find_reader_and_update_current_page array, name, duration
+    array.find{|r| r.name == name }.read_the_book!(duration)
+  end
+
+  def reading_hours
+    (current_page.to_f / reader.reading_speed).round(2)
+  end
+
   def time_to_finish
     (amazing_book.pages_quantity - current_page) / reading_speed
   end
@@ -25,7 +33,7 @@ class ReaderWithBook
   end
 
   def read_the_book! duration
-
+    self.current_page = current_page + duration * reader.reading_speed
   end
 
   def penalty_to_finish
