@@ -14,16 +14,19 @@ module Library
         self.class_variable_get :@@comments_counter
       end
 
+      def inc_comment_or_init increment = 0
+        if self.class_variables.include? :@@comments_counter
+          self.class_variable_set :@@comments_counter, self.class_variable_get(:@@comments_counter) + increment
+        else
+          self.class_variable_set :@@comments_counter, 0 
+        end
+      end
+
     end
 
     module Initializer
       def initialize *args
-        if self.class.class_variables.include? :@@comments_counter
-          self.class.class_variable_set :@@comments_counter, 
-            self.class.class_variable_get(:@@comments_counter)
-        else
-          self.class.class_variable_set :@@comments_counter, 0 
-        end
+        self.class.inc_comment_or_init
         @comments = []
         super *args
       end
@@ -34,11 +37,8 @@ module Library
     end
 
     def add_comment comment = ""
-      self.class.class_variable_set :@@comments_counter, 
-        self.class.class_variable_get(:@@comments_counter) + 1
-
+      self.class.inc_comment_or_init 1
       @@total_comments_counter += 1
-
       @comments << comment
     end
 
