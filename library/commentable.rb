@@ -11,14 +11,19 @@ module Library
     module ClassMethods
 
       def comments_quantity
-        class_variable_get :@@comments_counter
+        self.class_variable_get :@@comments_counter
       end
 
     end
 
     module Initializer
       def initialize *args
-        @@comments_counter ||= 0
+        if self.class.class_variables.include? :@@comments_counter
+          self.class.class_variable_set :@@comments_counter, 
+            self.class.class_variable_get(:@@comments_counter)
+        else
+          self.class.class_variable_set :@@comments_counter, 0 
+        end
         @comments = []
         super *args
       end
@@ -33,7 +38,7 @@ module Library
         self.class.class_variable_get(:@@comments_counter) + 1
 
       @@total_comments_counter += 1
-      
+
       @comments << comment
     end
 

@@ -17,7 +17,7 @@ describe Library::Author do
 
   it 'should be commentable' do
     author.add_comment "The comment"
-    expect(Library::Author.comments_quantity).to eq 2
+    expect(Library::Author.comments_quantity).to eq 1
     expect(Library::Commentable.total_comments_quantity).to eq 2
     expect(author.comments.count).to eq 1
   end
