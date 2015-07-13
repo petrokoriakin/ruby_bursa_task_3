@@ -1,4 +1,4 @@
-class ReaderWithBook
+class Library::ReaderWithBook
   attr_accessor :amazing_book, :current_page, :reader, :return_date
 
   def initialize  amazing_book, reader, current_page = 0, return_date = (Time.now + 2.weeks)
@@ -8,16 +8,8 @@ class ReaderWithBook
     @current_page = current_page
   end
 
-  def self.find_reader_and_update_current_page array, name, duration
-    array.find{|r| r.name == name }.read_the_book!(duration)
-  end
-
-  def reading_hours
-    (current_page.to_f / reader.reading_speed).round(2)
-  end
-
   def time_to_finish
-    (amazing_book.pages_quantity - current_page) / reading_speed
+    ((amazing_book.pages_quantity - current_page) / reader.reading_speed).round(2)
   end
 
   def penalty
@@ -25,7 +17,11 @@ class ReaderWithBook
   end
 
   def hours_overdue
-    (Time.now.to_i - issue_datetime.to_time.to_i) / 3600.0
+    (Time.now.to_i - return_date.to_time.to_i) / 3600.0
+  end
+
+  def hours_remaining
+    - hours_overdue.round(2)
   end
 
   def days_to_buy
@@ -33,7 +29,7 @@ class ReaderWithBook
   end
 
   def read_the_book! duration
-    self.current_page = current_page + duration * reader.reading_speed
+
   end
 
   def penalty_to_finish

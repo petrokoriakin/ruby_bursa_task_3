@@ -1,4 +1,4 @@
-class Book
+class Library::Book
   attr_accessor :author, :title
 
   def initialize author, title

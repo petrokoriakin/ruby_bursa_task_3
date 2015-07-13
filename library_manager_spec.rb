@@ -1,10 +1,8 @@
-require './library_manager.rb'
+require './library/library.rb'
 
-describe LibraryManager do
+describe Library::Manager do
 
-  let(:leo_tolstoy) do
-    Author.new(1828, 1910, 'Leo Tolstoy' ) 
-  end
+  let(:leo_tolstoy) { Author.new(1828, 1910, 'Leo Tolstoy' ) }
   let!(:oscar_wilde) { Author.new(1854, 1900, 'Oscar Wilde') }
   let!(:war_and_peace) { PublishedBook.new(leo_tolstoy, 'War and Peace', 1400, 3280, 1996) }
   let!(:ivan) {Reader.new('Ivan Testenko', 16)}
@@ -12,7 +10,6 @@ describe LibraryManager do
   let!(:manager) { LibraryManager.new([],[], [ivan_testenko]) }
 
   it 'should compose reader notification' do
-    binding.pry
     expect(manager.reader_notification("Ivan Testenko")). to eq <<-TEXT
 Dear Ivan Testenko!
 

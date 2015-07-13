@@ -1,4 +1,4 @@
-require 'active_support/all'
+﻿require 'active_support/all'
 require 'pry'
 
 require_relative 'author.rb'
@@ -7,7 +7,7 @@ require_relative 'published_book.rb'
 require_relative 'reader.rb'
 require_relative 'reader_with_book.rb'
 
-class LibraryManager
+class Library::Manager
 
   attr_accessor :readers, :books, :readers_with_books
 
@@ -15,8 +15,6 @@ class LibraryManager
     @readers_with_books = readers_with_books
     @readers = readers
     @books = books
-    @statistics = {}
-    populate_statistics!
   end
 
   def new_book author, title, price, pages_quantity, published_at
@@ -32,15 +30,35 @@ class LibraryManager
   end
 
   def read_the_book reader_name, duration
-    ReaderWithBook.find_reader_and_update_current_page(@readers_with_books, reader_name, duration)
+
   end
 
-  def reader_notification name
+  def reader_notification name = "Ivan Testenko"
+    r = readers_with_books.find{|r| r.reader.name == name}
+<<-TEXT
+Dear #{r.reader.name}!
 
+You should return a book "#{r.amazing_book.title}" authored by #{r.amazing_book.author.name} in #{r.hours_remaining} hours.
+Otherwise you will be charged $#{r.amazing_book.penalty_per_hour.round(2)} per hour.
+By the way, you are on #{r.current_page} page now and you need #{r.time_to_finish} hours to finish reading "#{r.amazing_book.title}"
+TEXT
   end
 
   def librarian_notification
+<<-TEXT
+Hello,
 
+There are #{books.count + readers_with_books.count} published books in the library.
+There are #{readers.count + readers_with_books.count} readers and #{readers_with_books.count} of them are reading the books.
+
+#{readers_information}
+TEXT
+  end
+
+  def readers_information
+    readers_with_books.map do |r|
+      "#{r.reader.name} is reading \"#{r.amazing_book.title}\" - should return on #{r.return_date.strftime("%Y-%m-%d at %l %p").downcase} - #{r.time_to_finish} hours of reading is needed to finish."
+    end.join("\n")
   end
 
   def statistics_notification
@@ -48,18 +66,6 @@ class LibraryManager
   end
 
   private
-
-  def reader_notification_params
-
-  end
-
-  def librarian_notification_params
-
-  end
-
-  def statistics_notification_params
-
-  end
 
   def populate_statistics!
     readers_with_books.each do |r|
@@ -104,6 +110,18 @@ class LibraryManager
           }
         }
     }
+  end
+
+  def reader_notification_params
+
+  end
+
+  def librarian_notification_params
+
+  end
+
+  def statistics_notification_params
+
   end
 
 end
